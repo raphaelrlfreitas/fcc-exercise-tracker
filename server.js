@@ -57,7 +57,7 @@ app.post("/api/exercise/new-user", (req, res) => {
           console.log(result);
           res.json({
             username: result.username,
-            id: result._id,
+            _id: result._id,
           });
         })
         .catch(err => console.log(err))
@@ -128,6 +128,17 @@ app.get("/api/exercise/log", (req, res) => {
     })
     
   })
+
+})
+app.get("/api/exercise/users", (req, res) => {
+  let usersArray = [];
+
+  let query = User.find();
+  query
+    .select({_id: 1, username: 1})
+    .exec()
+    .then(result => res.json(result))
+    .catch(err => console.log(err))
 
 })
 
