@@ -86,7 +86,7 @@ app.post("/api/exercise/add", (req, res) => {
       .then(result => {
         res.json({
           username: user.username,
-          userId: user._id,
+          _id: user._id,
           description: exercise.description,
           duration: exercise.duration,
           date: exercise.date,
@@ -124,12 +124,14 @@ app.get("/api/exercise/log", (req, res) => {
     res.json({
       _id: user._id,
       username: user.username,
+      count: filteredLog.length,
       log: filteredLog,
     })
     
   })
 
 })
+
 app.get("/api/exercise/users", (req, res) => {
 
   let query = User.find();
