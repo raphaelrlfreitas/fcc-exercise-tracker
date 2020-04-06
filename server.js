@@ -131,14 +131,17 @@ app.get("/api/exercise/log", (req, res) => {
 
 })
 app.get("/api/exercise/users", (req, res) => {
-  let usersArray = [];
 
   let query = User.find();
   query
     .select({_id: 1, username: 1})
-    .exec()
-    .then(result => res.json(result))
-    .catch(err => console.log(err))
+    .exec((err, result) => {
+      if(err){
+        console.log(err);
+      }
+      res.json(result);
+    })
+
 
 })
 
