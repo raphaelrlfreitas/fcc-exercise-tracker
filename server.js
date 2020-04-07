@@ -73,7 +73,6 @@ app.post("/api/exercise/add", (req, res) => {
       res.json({error: "Invalid User ID!"});
     }
     
-
     const exercise = new Exercise({
       description: req.body.description,
       duration: req.body.duration,
@@ -124,6 +123,7 @@ app.get("/api/exercise/log", (req, res) => {
     res.json({
       _id: user._id,
       username: user.username,
+      count: filteredLog.length,
       log: filteredLog,
     })
     
