@@ -22,7 +22,7 @@ const Schema = mongoose.Schema;
 var exercisesSchema = new Schema({
   description: { type: String, required: true },
   duration: { type: Number, required: true },
-  date: { type: Date },
+  date: { type: Date, default: Date.now },
 });
 
 var Exercise = mongoose.model('Exercise', exercisesSchema)
@@ -54,7 +54,6 @@ app.post("/api/exercise/new-user", (req, res) => {
       newUser
         .save()
         .then( result => {
-          console.log(result);
           res.json({
             username: result.username,
             _id: result._id,
@@ -74,22 +73,23 @@ app.post("/api/exercise/add", (req, res) => {
       res.json({error: "Invalid User ID!"});
     }
     
+
     const exercise = new Exercise({
       description: req.body.description,
       duration: req.body.duration,
-      date: req.body.date == "" ? new Date() : new Date(req.body.date),
+      date: !req.body.date ? Date.now : Date.parse(req.body.date),
     })
-
+    
     user.log.push(exercise);
     user
       .save()
       .then(result => {
         res.json({
-          username: user.username,
-          _id: user._id,
+          username: result.username,
           description: exercise.description,
           duration: exercise.duration,
-          date: exercise.date,
+          _id: result._id,
+          date: exercise.date.toDateString(),
         })
       })
       .catch(err => console.log(err))
@@ -112,10 +112,10 @@ app.get("/api/exercise/log", (req, res) => {
     let filteredLog = user.log;
 
     if(req.query.from){
-      filteredLog = filteredLog.filter(e => e.date >= new Date(req.query.from));
+      filteredLog = filteredLog.filter(e => e.date >= Date.parse(req.query.from));
     }
     if(req.query.to){
-      filteredLog = filteredLog.filter(e => e.date <= new Date(req.query.to));
+      filteredLog = filteredLog.filter(e => e.date <= Date.parse(req.query.to));
     }
     if(req.query.limit){
       filteredLog = filteredLog.splice(0,req.query.limit);
@@ -124,7 +124,6 @@ app.get("/api/exercise/log", (req, res) => {
     res.json({
       _id: user._id,
       username: user.username,
-      count: filteredLog.length,
       log: filteredLog,
     })
     
